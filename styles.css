@@ -75,9 +75,9 @@ body {
 }
 
 .logo {
-  height: 40px;
+  height: 40px;      /* tamaño desktop */
   width: auto;
-  max-width: 150px; /* no crecer demasiado en desktop */
+  max-width: 150px;  /* que no crezca demasiado */
 }
 
 /* Controls */
@@ -327,6 +327,9 @@ body {
   }
 }
 
+/* =================================================
+   RESPONSIVE MÓVIL PEQUEÑO
+   ================================================= */
 @media (max-width: 480px) {
   .container {
     padding: 0 10px;
@@ -337,11 +340,11 @@ body {
     font-size: 0.85rem;
   }
 
-  /* Header: logo arriba del texto en móvil, ajustado */
+  /* Header: logo arriba del texto en móvil */
   .logo-header {
     flex-direction: column;
     align-items: center;
-    gap: 5px; /* separación mínima */
+    gap: 5px;
   }
 
   .logo-title {
@@ -350,14 +353,14 @@ body {
   }
 
   .logo {
-    height: 25px; /* más pequeño en móvil */
-    max-width: 80%; /* que no sobrepase el ancho del dispositivo */
+    height: 35px;        /* más grande que antes pero sin salirse */
+    max-width: 90%;      /* respeta el ancho del dispositivo */
     margin-bottom: 5px;
   }
 
   .logo-title h1 {
-    font-size: 1.4rem; /* texto centrado y más pequeño */
+    font-size: 1.4rem;      /* texto centrado */
     text-align: center;
-    word-break: break-word; /* para textos largos */
+    word-break: break-word;  /* evita que textos largos se salgan */
   }
 }
