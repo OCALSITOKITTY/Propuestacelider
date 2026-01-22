@@ -2,12 +2,12 @@
    VARIABLES Y CONFIGURACIÓN BASE
    ================================================= */
 :root {
-  --bg-gradient: linear-gradient(135deg, #0B1F35, #1A3B52, #3A6EA5); /* Fondo gradiente azul */
-  --card-bg: #2E8B7E;         /* Azul verdoso para cards normales */
-  --card-fill: #FFFFFF;       /* Relleno blanco */
-  --event-gradient: linear-gradient(135deg, #F05454, #FF7F7F); /* Gradiente rojo para eventos */
-  --text: #FFFFFF;            /* Texto principal blanco */
-  --muted: rgba(224,224,224,0.7); /* Texto secundario */
+  --bg-gradient: linear-gradient(135deg, #0B1F35, #1A3B52, #3A6EA5);
+  --card-bg: #2E8B7E;
+  --card-fill: #FFFFFF;
+  --event-gradient: linear-gradient(135deg, #F05454, #FF7F7F);
+  --text: #FFFFFF;
+  --muted: rgba(224,224,224,0.7);
   --shadow: 0 4px 12px rgba(0,0,0,0.12);
   --radius: 10px;
   --maxwidth: 1200px;
@@ -335,11 +335,11 @@ body {
     font-size: 0.85rem;
   }
 
-  /* Header: logo arriba del texto en móvil, más grande y pegado */
+  /* Header: logo arriba del texto en móvil */
   .logo-header {
     flex-direction: column;
     align-items: center;
-    gap: 5px; /* menos espacio entre logo y título */
+    gap: 5px; /* espacio reducido */
   }
 
   .logo-title {
@@ -348,12 +348,12 @@ body {
   }
 
   .logo {
-    height: 80px; /* más grande en móvil */
-    margin-bottom: 5px; /* menos separación con el texto */
+    height: 30px; /* más pequeño en móvil */
+    margin-bottom: 5px;
   }
 
   .logo-title h1 {
-    font-size: 2rem;
+    font-size: 1.5rem; /* tamaño de texto ajustado */
     text-align: center;
   }
 }
