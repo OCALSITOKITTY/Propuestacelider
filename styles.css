@@ -43,7 +43,7 @@ body {
 }
 
 /* =================================================
-   TOPBAR
+   TOPBAR CON LOGO Y TÍTULO
    ================================================= */
 .topbar {
   background: var(--bg-gradient);
@@ -53,18 +53,30 @@ body {
   color: var(--text);
 }
 
-.topbar .container {
+.logo-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
   gap: 15px;
+  flex-wrap: wrap;
 }
 
-.topbar h1 {
+.logo-title {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* espacio entre logo y título en desktop */
+}
+
+.logo-title h1 {
   font-size: 1.6rem;
   font-weight: 600;
   color: var(--text);
+  margin: 0;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
 }
 
 .controls {
@@ -321,5 +333,27 @@ body {
   .day-cell {
     height: 50px;
     font-size: 0.85rem;
+  }
+
+  /* Header: logo arriba del texto en móvil, más grande y pegado */
+  .logo-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 5px; /* menos espacio entre logo y título */
+  }
+
+  .logo-title {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logo {
+    height: 80px; /* más grande en móvil */
+    margin-bottom: 5px; /* menos separación con el texto */
+  }
+
+  .logo-title h1 {
+    font-size: 2rem;
+    text-align: center;
   }
 }
