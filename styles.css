@@ -1,0 +1,140 @@
+:root{
+  --bg:#f8f8f8;         /* fondo general */
+  --card:#e0e0e0;       /* tarjetas */
+  --accent:#1a1a1a;     /* títulos, topbar */
+  --muted:#7d7d7d;      /* texto secundario */
+  --success:#4f4f4f;    /* acentos, puntos de eventos */
+  --shadow: 0 10px 30px rgba(0,0,0,0.08);
+  --radius: 12px;
+  --maxwidth:1200px;
+}
+
+/* Contenedores de color para cambios fáciles */
+.theme-bg{ background-color: var(--bg) !important; }
+.theme-card{ background-color: var(--card) !important; }
+.theme-accent{ color: var(--accent) !important; background-color: var(--accent) !important; }
+.theme-muted{ color: var(--muted) !important; }
+.theme-success{ color: var(--success) !important; background-color: var(--success) !important; }
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: Inter, system-ui, Arial, Helvetica, sans-serif;
+  background:var(--bg);
+  color:#1a1a1a;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+.container{
+  width:95%;
+  max-width:var(--maxwidth);
+  margin:0 auto;
+}
+
+/* Topbar */
+.topbar{
+  background: linear-gradient(90deg, rgba(26,26,26,0.08), rgba(26,26,26,0.03));
+  padding:16px 0;
+  margin-bottom:18px;
+}
+.topbar .container{display:flex;align-items:center;justify-content:space-between}
+.topbar h1{margin:0;font-size:1.25rem;color:var(--accent)}
+.controls{display:flex;gap:10px;align-items:center}
+.btn{
+  background:var(--accent); color:white; border:none; padding:8px 12px;border-radius:8px; cursor:pointer;
+  box-shadow: var(--shadow);
+}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.link{color:var(--accent); text-decoration:none; font-size:.9rem; padding:6px 8px}
+
+/* Layout */
+.layout{
+  display:grid;
+  grid-template-columns: 1fr 320px;
+  gap:20px;
+  align-items:start;
+}
+
+/* Month card */
+.month-card{
+  background:var(--card);
+  padding:18px;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.month-title{
+  margin:0 0 10px 0;
+  font-weight:700;
+  color:var(--accent);
+  font-size:1rem;
+}
+
+/* Grid */
+.month-grid{
+  display:grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap:8px;
+}
+.day-header{
+  font-size:.75rem;
+  color:var(--muted);
+  text-align:center;
+}
+.day-cell{
+  background:#f0f0f0;
+  border-radius:10px;
+  height:62px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:6px;
+  position:relative;
+  border:1px solid #d0d0d0;
+  transition: transform .12s ease, background .12s ease;
+  cursor:pointer;
+}
+.day-cell:hover{transform:translateY(-4px); box-shadow:0 8px 20px rgba(0,0,0,0.06)}
+.day-number{font-weight:600}
+.has-event{ 
+  background: linear-gradient(180deg, #dcdcdc, #bfbfbf); 
+  border:1px solid rgba(79,79,79,0.25);
+}
+.dot{
+  position:absolute; bottom:6px; width:8px; height:8px; border-radius:50%; background:var(--success);
+}
+
+/* Sidebar */
+.sidebar{
+  position:sticky;
+  top:20px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.sidebar h2{margin:0; font-size:1.05rem}
+.upcoming-card{
+  background:var(--card); padding:10px; border-radius:10px; box-shadow:var(--shadow); border:1px solid #d0d0d0;
+}
+.upcoming-title{margin:0 0 6px 0; font-weight:700}
+.upcoming-date{margin:0;color:var(--muted);font-size:.85rem}
+.upcoming-img{width:100%;height:120px;object-fit:cover;margin-top:8px;border-radius:8px}
+.img-hidden{display:none !important}
+
+/* Modal */
+.modal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; background: rgba(0,0,0,0.45); z-index:999; padding:20px }
+.modal.open{ display:flex }
+.modal-card{ width:100%; max-width:520px; background:var(--card); border-radius:12px; padding:18px; box-shadow:0 20px 60px rgba(0,0,0,0.2) }
+.modal-close{ position:absolute; right:18px; top:18px; border:none; background:transparent; font-size:16px; cursor:pointer }
+.modal-title{ margin:0 0 8px 0; font-size:1.2rem }
+.modal-desc{ margin:0 0 12px 0; color:var(--muted) }
+.modal-img{ width:100%; height:300px; object-fit:cover; border-radius:10px }
+
+/* Footer */
+.footer{ margin-top:18px; padding:14px 0; text-align:center; color:var(--muted); font-size:.85rem }
+
+/* Responsive */
+@media (max-width: 980px){
+  .layout{ grid-template-columns: 1fr; }
+  .sidebar{ position:relative; top:0; }
+}

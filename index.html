@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<header class="topbar">
+      <link rel="stylesheet" href="styles.css">
+
+  <div class="container" style="display: flex; align-items: center; justify-content: space-between;">
+    
+    <!-- Logo a la izquierda -->
+    <img src="logo.jpeg" alt="Logo" style="height: 50px; width: auto;">
+
+    <!-- Título centrado -->
+    <h1 style="margin: 0; flex-grow: 1; text-align: center;">Calendario 2026-2027</h1>
+
+    <!-- Controles a la derecha -->
+    <div class="controls" style="display: flex; gap: 10px;">
+      <button id="refreshBtn" class="btn">Actualizar</button>
+      <a id="openSheet" class="link" target="_blank" rel="noopener">Editar en Google Sheets</a>
+    </div>
+
+  </div>
+</header>
+
+
+<main class="container layout">
+  <section id="calendarArea" class="months"></section>
+
+  <aside class="sidebar">
+    <h2>Próximos eventos</h2>
+    <div id="upcoming"></div>
+  </aside>
+</main>
+
+<!-- MODAL -->
+<div id="modal" class="modal" aria-hidden="true">
+  <div class="modal-card">
+    <button id="modalClose" class="modal-close">✖</button>
+    <h3 id="modalTitle"></h3>
+    <p id="modalDate" class="muted"></p>
+    <p id="modalDesc"></p>
+    <img id="modalImg" class="modal-img" alt="">
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <small>Datos desde Google Sheets • Proyecto sin backend</small>
+  </div>
+</footer>
+
+<script>
+/* =======================
+   CONFIG
+   ======================= */
+const SHEET_ID = "1M6KmCyI9nW21cD2cLER0POZceWOwQTA25n5sRXzjdYg";
+const SHEET_NAME = "calendar";
+const SHEET_URL = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
+const YEAR = 2026;
+
+/* =======================
+   UTILIDADES (FIX FECHAS)
+   ======================= */
+const qs = sel => document.querySelector(sel);
+const months = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+const daysShort = ["D","L","M","M","J","V","S"];
+
+function parseSafeDate(dateStr) {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d, 12, 0, 0); // ← FIX DEFINITIVO
+}
+
+/* =======================
+   ESTADO
+   ======================= */
+let EVENTS = [];
+
+/* =======================
+   UI
+   ======================= */
+const calendarArea = qs("#calendarArea");
+const upcomingEl = qs("#upcoming");
+const refreshBtn = qs("#refreshBtn");
+const openSheetLink = qs("#openSheet");
+const modal = qs("#modal");
+const modalTitle = qs("#modalTitle");
+const modalDate = qs("#modalDate");
+const modalDesc = qs("#modalDesc");
+const modalImg = qs("#modalImg");
+const modalClose = qs("#modalClose");
+
+openSheetLink.href = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit#gid=0`;
+
+/* =======================
+   CARGA DE DATOS
+   ======================= */
+async function loadEvents() {
+  refreshBtn.disabled = true;
+  refreshBtn.textContent = "Cargando...";
+  try {
+    const res = await fetch(SHEET_URL);
+    const data = await res.json();
+
+    EVENTS = data
+      .map(r => ({
+        date: (r.date || "").trim(),
+        title: (r.title || "").trim(),
+        description: (r.description || "").trim(),
+        image: (r.image || "").trim()
+      }))
+      .filter(e => e.date && e.title);
+
+    renderMonths();
+    renderUpcoming();
+  } catch (err) {
+    calendarArea.innerHTML = `<p>Error cargando datos</p>`;
+  } finally {
+    refreshBtn.disabled = false;
+    refreshBtn.textContent = "Actualizar";
+  }
+}
+
+/* =======================
+   CALENDARIO
+   ======================= */
+function renderMonths() {
+  calendarArea.innerHTML = "";
+
+  for (let m = 0; m < 12; m++) {
+    const monthCard = document.createElement("section");
+    monthCard.className = "month-card";
+    monthCard.id = `month-${m + 1}`;
+
+    monthCard.innerHTML = `<h2 class="month-title">${months[m]}</h2>`;
+    const grid = document.createElement("div");
+    grid.className = "month-grid";
+
+    daysShort.forEach(d => {
+      const h = document.createElement("div");
+      h.className = "day-header";
+      h.textContent = d;
+      grid.appendChild(h);
+    });
+
+    const firstDay = new Date(YEAR, m, 1).getDay();
+    const daysInMonth = new Date(YEAR, m + 1, 0).getDate();
+
+    for (let i = 0; i < firstDay; i++) {
+      grid.appendChild(document.createElement("div"));
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateKey = `${YEAR}-${String(m + 1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+      const ev = EVENTS.find(e => e.date === dateKey);
+
+      const cell = document.createElement("button");
+      cell.className = "day-cell";
+      cell.innerHTML = `<span>${d}</span>`;
+
+      if (ev) {
+        cell.classList.add("has-event");
+        cell.onclick = () => openModal(ev);
+      }
+
+      grid.appendChild(cell);
+    }
+
+    monthCard.appendChild(grid);
+    calendarArea.appendChild(monthCard);
+  }
+}
+
+/* =======================
+   PRÓXIMOS EVENTOS
+   ======================= */
+function renderUpcoming() {
+  upcomingEl.innerHTML = "";
+  const today = parseSafeDate(new Date().toISOString().slice(0,10));
+
+  const upcoming = EVENTS
+    .map(e => ({...e, time: parseSafeDate(e.date)}))
+    .filter(e => e.time >= today)
+    .sort((a,b) => a.time - b.time)
+    .slice(0,6);
+
+  if (!upcoming.length) {
+    upcomingEl.innerHTML = `<p>No hay eventos próximos</p>`;
+    return;
+  }
+
+  upcoming.forEach(ev => {
+    const card = document.createElement("div");
+    card.className = "upcoming-card";
+
+    const dt = parseSafeDate(ev.date);
+    card.innerHTML = `
+      <strong>${ev.title}</strong>
+      <span>${dt.getDate()} ${months[dt.getMonth()]} ${dt.getFullYear()}</span>
+    `;
+
+    if (ev.image) {
+      const img = document.createElement("img");
+      img.src = ev.image;
+      img.className = "upcoming-img";
+      card.appendChild(img);
+    }
+
+    card.onclick = () => {
+      scrollToDate(ev.date);
+      openModal(ev);
+    };
+
+    upcomingEl.appendChild(card);
+  });
+}
+
+/* =======================
+   SCROLL
+   ======================= */
+function scrollToDate(dateStr) {
+  const dt = parseSafeDate(dateStr);
+  const el = document.getElementById(`month-${dt.getMonth() + 1}`);
+  if (el) el.scrollIntoView({behavior:"smooth"});
+}
+
+/* =======================
+   MODAL
+   ======================= */
+function openModal(ev) {
+  modalTitle.textContent = ev.title;
+  modalDate.textContent = ev.date;
+  modalDesc.textContent = ev.description;
+
+  if (ev.image) {
+    modalImg.src = ev.image;
+    modalImg.style.display = "block";
+  } else {
+    modalImg.style.display = "none";
+  }
+
+  modal.classList.add("open");
+}
+
+modalClose.onclick = () => modal.classList.remove("open");
+modal.onclick = e => { if (e.target === modal) modal.classList.remove("open"); };
+refreshBtn.onclick = loadEvents;
+
+/* INIT */
+loadEvents();
+</script>
+
+</body>
+</html>
