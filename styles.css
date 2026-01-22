@@ -77,8 +77,10 @@ body {
 .logo {
   height: 40px;
   width: auto;
+  max-width: 150px; /* no crecer demasiado en desktop */
 }
 
+/* Controls */
 .controls {
   display: flex;
   gap: 12px;
@@ -335,11 +337,11 @@ body {
     font-size: 0.85rem;
   }
 
-  /* Header: logo arriba del texto en móvil */
+  /* Header: logo arriba del texto en móvil, ajustado */
   .logo-header {
     flex-direction: column;
     align-items: center;
-    gap: 5px; /* espacio reducido */
+    gap: 5px; /* separación mínima */
   }
 
   .logo-title {
@@ -348,12 +350,14 @@ body {
   }
 
   .logo {
-    height: 30px; /* más pequeño en móvil */
+    height: 25px; /* más pequeño en móvil */
+    max-width: 80%; /* que no sobrepase el ancho del dispositivo */
     margin-bottom: 5px;
   }
 
   .logo-title h1 {
-    font-size: 1.5rem; /* tamaño de texto ajustado */
+    font-size: 1.4rem; /* texto centrado y más pequeño */
     text-align: center;
+    word-break: break-word; /* para textos largos */
   }
 }
