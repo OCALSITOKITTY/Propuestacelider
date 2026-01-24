@@ -10,12 +10,15 @@
 
 <body>
 
+  <!-- ================= HEADER ================= -->
   <header class="topbar">
     <div class="container logo-header">
+
       <div class="logo-title">
         <img src="logo.png" alt="Logo" class="logo">
         <h1>Calendario 2026-2027 CELIDER-08</h1>
       </div>
+
       <input type="checkbox" id="menuToggle" class="menu-toggle">
 
       <label for="menuToggle" class="hamburger">
@@ -30,19 +33,57 @@
           Editar en Google Sheets
         </a>
       </div>
+
     </div>
   </header>
 
+  <!-- ================= MAIN ================= -->
   <main class="container layout">
+
+    <!-- ===== CALENDARIO ===== -->
     <section id="calendarArea" class="months"></section>
 
+    <!-- ===== SIDEBAR ===== -->
     <aside class="sidebar">
       <h2>Próximos eventos</h2>
       <div id="upcoming"></div>
+
+      <!-- ================= LEYENDA ================= -->
+      <div class="legend">
+        <h3 class="legend-title">Leyenda de eventos</h3>
+
+        <div class="legend-items">
+          <div class="legend-item">
+            <span class="legend-dot tag-actividad"></span>
+            <span>Actividad</span>
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-dot tag-visita"></span>
+            <span>Visita</span>
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-dot tag-reunion"></span>
+            <span>Reunión</span>
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-dot tag-evento"></span>
+            <span>Evento</span>
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-dot tag-feriado"></span>
+            <span>Feriado</span>
+          </div>
+        </div>
+      </div>
     </aside>
+
   </main>
 
-  <!-- MODAL -->
+  <!-- ================= MODAL ================= -->
   <div id="modal" class="modal" aria-hidden="true">
     <div class="modal-card">
       <button id="modalClose" class="modal-close">✖</button>
@@ -56,41 +97,26 @@
     </div>
   </div>
 
+  <!-- ================= FOOTER ================= -->
   <footer class="footer">
     <div class="container">
       <small>ODTeam© - Todos los derechos reservados</small>
     </div>
   </footer>
 
+  <!-- ================= SCRIPT ================= -->
   <script>
-    /* =======================
-       CONFIG
-       ======================= */
     const SHEET_ID = "1M6KmCyI9nW21cD2cLER0POZceWOwQTA25n5sRXzjdYg";
     const SHEET_NAME = "calendar";
     const SHEET_URL = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
     const YEAR = 2026;
 
-    /* =======================
-       UTILIDADES
-       ======================= */
-    const qs = sel => document.querySelector(sel);
-    const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-    const daysShort = ["D", "L", "M", "M", "J", "V", "S"];
+    const months = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+    const daysShort = ["D","L","M","M","J","V","S"];
+    const qs = s => document.querySelector(s);
 
-    function parseSafeDate(dateStr) {
-      const [y, m, d] = dateStr.split("-").map(Number);
-      return new Date(y, m - 1, d, 12, 0, 0);
-    }
-
-    /* =======================
-       ESTADO
-       ======================= */
     let EVENTS = [];
 
-    /* =======================
-       UI
-       ======================= */
     const calendarArea = qs("#calendarArea");
     const upcomingEl = qs("#upcoming");
     const refreshBtn = qs("#refreshBtn");
@@ -107,50 +133,36 @@
     openSheetLink.href =
       `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit#gid=0`;
 
-    /* =======================
-       CARGA DE DATOS
-       ======================= */
-    async function loadEvents() {
-      refreshBtn.disabled = true;
-      refreshBtn.textContent = "Cargando...";
-
-      try {
-        const res = await fetch(SHEET_URL);
-        const data = await res.json();
-
-        EVENTS = data
-          .map(r => ({
-            date: (r.date || "").trim(),
-            title: (r.title || "").trim(),
-            description: (r.description || "").trim(),
-            image: (r.image || "").trim(),
-            pictures: (r.pictures || "").trim()
-          }))
-          .filter(e => e.date && e.title);
-
-        renderMonths();
-        renderUpcoming();
-
-      } catch (err) {
-        calendarArea.innerHTML = "<p>Error cargando datos</p>";
-      } finally {
-        refreshBtn.disabled = false;
-        refreshBtn.textContent = "Actualizar";
-      }
+    function parseSafeDate(str) {
+      const [y,m,d] = str.split("-").map(Number);
+      return new Date(y, m-1, d, 12);
     }
 
-    /* =======================
-       CALENDARIO
-       ======================= */
-    function renderMonths() {
+    async function loadEvents() {
+      const res = await fetch(SHEET_URL);
+      const data = await res.json();
+
+      EVENTS = data.map(r => ({
+        date: r.date?.trim(),
+        title: r.title?.trim(),
+        description: r.description?.trim(),
+        image: r.image?.trim(),
+        pictures: r.pictures?.trim(),
+        type: (r.type || "evento").toLowerCase().trim()
+      })).filter(e => e.date && e.title);
+
+      renderCalendar();
+      renderUpcoming();
+    }
+
+    function renderCalendar() {
       calendarArea.innerHTML = "";
 
       for (let m = 0; m < 12; m++) {
-        const monthCard = document.createElement("section");
-        monthCard.className = "month-card";
-        monthCard.id = `month-${m + 1}`;
-
-        monthCard.innerHTML = `<h2 class="month-title">${months[m]}</h2>`;
+        const month = document.createElement("section");
+        month.className = "month-card";
+        month.id = `month-${m+1}`;
+        month.innerHTML = `<h2 class="month-title">${months[m]}</h2>`;
 
         const grid = document.createElement("div");
         grid.className = "month-grid";
@@ -163,110 +175,54 @@
         });
 
         const firstDay = new Date(YEAR, m, 1).getDay();
-        const daysInMonth = new Date(YEAR, m + 1, 0).getDate();
+        const daysInMonth = new Date(YEAR, m+1, 0).getDate();
 
-        for (let i = 0; i < firstDay; i++) {
-          grid.appendChild(document.createElement("div"));
-        }
+        for (let i=0;i<firstDay;i++) grid.appendChild(document.createElement("div"));
 
-        for (let d = 1; d <= daysInMonth; d++) {
-          const dateKey =
-            `${YEAR}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-
-          const ev = EVENTS.find(e => e.date === dateKey);
+        for (let d=1; d<=daysInMonth; d++) {
+          const key = `${YEAR}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+          const ev = EVENTS.find(e => e.date === key);
 
           const cell = document.createElement("button");
           cell.className = "day-cell";
           cell.innerHTML = `<span>${d}</span>`;
 
           if (ev) {
-            cell.classList.add("has-event");
+            cell.classList.add("has-event", `tag-${ev.type}`);
             cell.onclick = () => openModal(ev);
           }
 
           grid.appendChild(cell);
         }
 
-        monthCard.appendChild(grid);
-        calendarArea.appendChild(monthCard);
+        month.appendChild(grid);
+        calendarArea.appendChild(month);
       }
     }
 
-    /* =======================
-       PRÓXIMOS EVENTOS
-       ======================= */
     function renderUpcoming() {
       upcomingEl.innerHTML = "";
-      const today = parseSafeDate(new Date().toISOString().slice(0, 10));
 
-      const upcoming = EVENTS
-        .map(e => ({ ...e, time: parseSafeDate(e.date) }))
-        .filter(e => e.time >= today)
-        .sort((a, b) => a.time - b.time)
-        .slice(0, 6);
-
-      if (!upcoming.length) {
-        upcomingEl.innerHTML = "<p>No hay eventos próximos</p>";
-        return;
-      }
-
-      upcoming.forEach(ev => {
+      EVENTS.slice(0,6).forEach(ev => {
         const card = document.createElement("div");
-        card.className = "upcoming-card";
-
-        const dt = parseSafeDate(ev.date);
-        card.innerHTML = `
-      <strong>${ev.title}</strong>
-      <span>${dt.getDate()} ${months[dt.getMonth()]} ${dt.getFullYear()}</span>
-    `;
-
-        if (ev.image) {
-          const img = document.createElement("img");
-          img.src = ev.image;
-          img.className = "upcoming-img";
-          card.appendChild(img);
-        }
-
-        card.onclick = () => {
-          scrollToDate(ev.date);
-          openModal(ev);
-        };
-
+        card.className = `upcoming-card tag-${ev.type}`;
+        card.innerHTML = `<strong>${ev.title}</strong><span>${ev.date}</span>`;
+        card.onclick = () => openModal(ev);
         upcomingEl.appendChild(card);
       });
     }
 
-    /* =======================
-       SCROLL
-       ======================= */
-    function scrollToDate(dateStr) {
-      const dt = parseSafeDate(dateStr);
-      const el = document.getElementById(`month-${dt.getMonth() + 1}`);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }
-
-    /* =======================
-       MODAL (CORREGIDO)
-       ======================= */
     function openModal(ev) {
       modalTitle.textContent = ev.title;
       modalDate.textContent = ev.date;
       modalDesc.textContent = ev.description;
 
-      if (ev.image) {
-        modalImg.src = ev.image;
-        modalImg.style.display = "block";
-      } else {
-        modalImg.style.display = "none";
-      }
+      modalImg.style.display = ev.image ? "block" : "none";
+      modalImg.src = ev.image || "";
 
-      const today = parseSafeDate(new Date().toISOString().slice(0, 10));
-      const eventDate = parseSafeDate(ev.date);
-
-      // 🔥 CORRECCIÓN CLAVE: HOY O PASADO
-      if (eventDate <= today && ev.pictures) {
+      if (ev.pictures) {
         modalPicsBtn.href = ev.pictures;
-        modalPicsBtn.style.display = "inline-block";
+        modalPicsBtn.style.display = "block";
       } else {
         modalPicsBtn.style.display = "none";
       }
@@ -275,15 +231,10 @@
     }
 
     modalClose.onclick = () => modal.classList.remove("open");
-    modal.onclick = e => {
-      if (e.target === modal) modal.classList.remove("open");
-    };
-    refreshBtn.onclick = loadEvents;
+    modal.onclick = e => e.target === modal && modal.classList.remove("open");
 
-    /* INIT */
     loadEvents();
   </script>
 
 </body>
-
 </html>
