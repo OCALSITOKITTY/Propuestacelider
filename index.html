@@ -16,12 +16,12 @@
     </div>
     <div class="controls">
       <button id="refreshBtn" class="btn">Actualizar</button>
-      <a id="openSheet" class="link" target="_blank" rel="noopener">Editar en Google Sheets</a>
+      <a id="openSheet" class="link" target="_blank" rel="noopener">
+        Editar en Google Sheets
+      </a>
     </div>
   </div>
 </header>
-
-
 
 <main class="container layout">
   <section id="calendarArea" class="months"></section>
@@ -40,6 +40,12 @@
     <p id="modalDate" class="muted"></p>
     <p id="modalDesc"></p>
     <img id="modalImg" class="modal-img" alt="">
+    <a id="modalPicsBtn"
+       class="pics-access"
+       target="_blank"
+       rel="noopener">
+       Acceder a fotos
+    </a>
   </div>
 </div>
 
@@ -59,7 +65,7 @@ const SHEET_URL = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
 const YEAR = 2026;
 
 /* =======================
-   UTILIDADES (FIX FECHAS)
+   UTILIDADES
    ======================= */
 const qs = sel => document.querySelector(sel);
 const months = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
@@ -67,7 +73,7 @@ const daysShort = ["D","L","M","M","J","V","S"];
 
 function parseSafeDate(dateStr) {
   const [y, m, d] = dateStr.split("-").map(Number);
-  return new Date(y, m - 1, d, 12, 0, 0); // ← FIX DEFINITIVO
+  return new Date(y, m - 1, d, 12, 0, 0);
 }
 
 /* =======================
@@ -82,14 +88,17 @@ const calendarArea = qs("#calendarArea");
 const upcomingEl = qs("#upcoming");
 const refreshBtn = qs("#refreshBtn");
 const openSheetLink = qs("#openSheet");
+
 const modal = qs("#modal");
 const modalTitle = qs("#modalTitle");
 const modalDate = qs("#modalDate");
 const modalDesc = qs("#modalDesc");
 const modalImg = qs("#modalImg");
+const modalPicsBtn = qs("#modalPicsBtn");
 const modalClose = qs("#modalClose");
 
-openSheetLink.href = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit#gid=0`;
+openSheetLink.href =
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit#gid=0`;
 
 /* =======================
    CARGA DE DATOS
@@ -97,6 +106,7 @@ openSheetLink.href = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit#gi
 async function loadEvents() {
   refreshBtn.disabled = true;
   refreshBtn.textContent = "Cargando...";
+
   try {
     const res = await fetch(SHEET_URL);
     const data = await res.json();
@@ -106,14 +116,16 @@ async function loadEvents() {
         date: (r.date || "").trim(),
         title: (r.title || "").trim(),
         description: (r.description || "").trim(),
-        image: (r.image || "").trim()
+        image: (r.image || "").trim(),
+        pictures: (r.pictures || "").trim()
       }))
       .filter(e => e.date && e.title);
 
     renderMonths();
     renderUpcoming();
+
   } catch (err) {
-    calendarArea.innerHTML = `<p>Error cargando datos</p>`;
+    calendarArea.innerHTML = "<p>Error cargando datos</p>";
   } finally {
     refreshBtn.disabled = false;
     refreshBtn.textContent = "Actualizar";
@@ -132,6 +144,7 @@ function renderMonths() {
     monthCard.id = `month-${m + 1}`;
 
     monthCard.innerHTML = `<h2 class="month-title">${months[m]}</h2>`;
+
     const grid = document.createElement("div");
     grid.className = "month-grid";
 
@@ -150,7 +163,9 @@ function renderMonths() {
     }
 
     for (let d = 1; d <= daysInMonth; d++) {
-      const dateKey = `${YEAR}-${String(m + 1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+      const dateKey =
+        `${YEAR}-${String(m + 1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+
       const ev = EVENTS.find(e => e.date === dateKey);
 
       const cell = document.createElement("button");
@@ -178,13 +193,13 @@ function renderUpcoming() {
   const today = parseSafeDate(new Date().toISOString().slice(0,10));
 
   const upcoming = EVENTS
-    .map(e => ({...e, time: parseSafeDate(e.date)}))
+    .map(e => ({ ...e, time: parseSafeDate(e.date) }))
     .filter(e => e.time >= today)
     .sort((a,b) => a.time - b.time)
     .slice(0,6);
 
   if (!upcoming.length) {
-    upcomingEl.innerHTML = `<p>No hay eventos próximos</p>`;
+    upcomingEl.innerHTML = "<p>No hay eventos próximos</p>";
     return;
   }
 
@@ -220,11 +235,11 @@ function renderUpcoming() {
 function scrollToDate(dateStr) {
   const dt = parseSafeDate(dateStr);
   const el = document.getElementById(`month-${dt.getMonth() + 1}`);
-  if (el) el.scrollIntoView({behavior:"smooth"});
+  if (el) el.scrollIntoView({ behavior: "smooth" });
 }
 
 /* =======================
-   MODAL
+   MODAL (CORREGIDO)
    ======================= */
 function openModal(ev) {
   modalTitle.textContent = ev.title;
@@ -238,11 +253,24 @@ function openModal(ev) {
     modalImg.style.display = "none";
   }
 
+  const today = parseSafeDate(new Date().toISOString().slice(0,10));
+  const eventDate = parseSafeDate(ev.date);
+
+  // 🔥 CORRECCIÓN CLAVE: HOY O PASADO
+  if (eventDate <= today && ev.pictures) {
+    modalPicsBtn.href = ev.pictures;
+    modalPicsBtn.style.display = "inline-block";
+  } else {
+    modalPicsBtn.style.display = "none";
+  }
+
   modal.classList.add("open");
 }
 
 modalClose.onclick = () => modal.classList.remove("open");
-modal.onclick = e => { if (e.target === modal) modal.classList.remove("open"); };
+modal.onclick = e => {
+  if (e.target === modal) modal.classList.remove("open");
+};
 refreshBtn.onclick = loadEvents;
 
 /* INIT */
