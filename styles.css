@@ -185,7 +185,6 @@ body {
   cursor: pointer;
   transition: var(--transition);
 
-  /* 🔥 CORRECCIÓN CLAVE */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -243,15 +242,15 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.35);
 }
 
-/* ================= MODAL ================= */
+/* ================= MODAL (FIX RESPONSIVE) ================= */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.65);
   display: none;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 16px;
   z-index: 100;
 }
 
@@ -263,14 +262,25 @@ body {
   background: var(--glass-bg-strong);
   backdrop-filter: blur(14px);
   border: 1px solid var(--glass-border);
-  padding: 26px;
+  padding: 22px;
   border-radius: 22px;
-  max-width: 540px;
+
   width: 100%;
-  max-height: calc(100vh - 120px);
+  max-width: 540px;
+  max-height: 90vh;
   overflow-y: auto;
+
   position: relative;
   box-shadow: var(--shadow);
+}
+
+/* 🔥 IMÁGENES DENTRO DEL MODAL */
+.modal-card img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 14px;
+  display: block;
+  margin: 12px auto;
 }
 
 .modal-close {
@@ -292,6 +302,32 @@ body {
 .modal-close:hover {
   background: rgba(255,255,255,0.45);
   transform: rotate(90deg);
+}
+
+/* ================= BOTÓN ACCEDER A FOTOS ================= */
+.pics-access {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  margin-top: 18px;
+  padding: 14px 20px;
+
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  color: #fff;
+
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 16px;
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+  transition: var(--transition);
+}
+
+.btn-photos:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.45);
 }
 
 /* ================= FOOTER ================= */
