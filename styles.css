@@ -2,7 +2,6 @@
 :root {
   --bg-main: linear-gradient(135deg, #0a1f33, #133c5a, #2c6ea3);
 
-  /* Glass / semi-transparente */
   --glass-bg: rgba(255,255,255,0.15);
   --glass-bg-strong: rgba(255,255,255,0.22);
   --glass-border: rgba(255,255,255,0.25);
@@ -27,6 +26,7 @@ body {
   min-height: 100vh;
 }
 
+/* ================= CONTAINER ================= */
 .container {
   max-width: 1200px;
   margin: auto;
@@ -68,10 +68,10 @@ body {
 }
 
 .btn {
-  background: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.95);
   color: #0a1f33;
-  padding: 10px 20px;
-  border-radius: 12px;
+  padding: 10px 22px;
+  border-radius: 14px;
   border: none;
   font-weight: 700;
   cursor: pointer;
@@ -80,7 +80,7 @@ body {
 }
 
 .btn:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .link {
@@ -149,54 +149,98 @@ body {
   background: rgba(255,255,255,0.12);
   color: #fff;
   padding: 10px 0;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   transition: var(--transition);
 }
 
 .day-cell:hover {
-  background: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.28);
 }
 
+/* ================= EVENT COLORS ================= */
 .has-event {
-  background: linear-gradient(135deg, #ff5252, #b71c1c);
   font-weight: 700;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
 }
+
+.tag-actividad { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+.tag-visita    { background: linear-gradient(135deg, #22c55e, #15803d); }
+.tag-reunion   { background: linear-gradient(135deg, #a855f7, #6b21a8); }
+.tag-evento    { background: linear-gradient(135deg, #f59e0b, #b45309); }
+.tag-feriado   { background: linear-gradient(135deg, #ef4444, #991b1b); }
 
 /* ================= UPCOMING ================= */
 .sidebar h2 {
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
 
 .upcoming-card {
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
   border: 1px solid var(--glass-border);
-  padding: 14px;
-  border-radius: 14px;
-  margin-bottom: 18px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  margin-bottom: 22px;
   cursor: pointer;
   transition: var(--transition);
+
+  /* 🔥 CORRECCIÓN CLAVE */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .upcoming-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   background: var(--glass-bg-strong);
 }
 
-.upcoming-card strong {
-  display: block;
+.event-name {
+  font-weight: 700;
+  font-size: 1rem;
 }
 
-.upcoming-card span {
+.event-date {
   font-size: 0.9rem;
-  opacity: 0.85;
+  opacity: 0.8;
+  white-space: nowrap;
 }
 
-.upcoming-img {
-  width: 100%;
-  border-radius: 10px;
-  margin-top: 10px;
+/* ================= LEYENDA ================= */
+.legend {
+  margin-top: 26px;
+  padding: 18px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+}
+
+.legend-title {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.legend-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.35);
 }
 
 /* ================= MODAL ================= */
@@ -207,7 +251,7 @@ body {
   display: none;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 24px;
   z-index: 100;
 }
 
@@ -219,33 +263,22 @@ body {
   background: var(--glass-bg-strong);
   backdrop-filter: blur(14px);
   border: 1px solid var(--glass-border);
-  padding: 24px;
-  border-radius: 20px;
-  max-width: 520px;
+  padding: 26px;
+  border-radius: 22px;
+  max-width: 540px;
   width: 100%;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
   position: relative;
   box-shadow: var(--shadow);
-  animation: modalIn 0.25s ease;
 }
 
-@keyframes modalIn {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* ❌ BOTÓN CERRAR */
 .modal-close {
   position: absolute;
   top: 14px;
   right: 14px;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: none;
   background: rgba(255,255,255,0.25);
@@ -253,46 +286,12 @@ body {
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition: var(--transition);
 }
 
 .modal-close:hover {
   background: rgba(255,255,255,0.45);
   transform: rotate(90deg);
-}
-
-.modal-img {
-  width: 100%;
-  border-radius: 12px;
-  margin-top: 12px;
-}
-
-.muted {
-  opacity: 0.85;
-  margin-bottom: 8px;
-}
-
-/* ================= BOTÓN FOTOS ================= */
-.pics-access {
-  display: none;
-  margin-top: 16px;
-  padding: 14px;
-  text-align: center;
-  background: linear-gradient(135deg, #ff5a5a, #b11217);
-  color: #fff;
-  border-radius: 16px;
-  font-weight: 700;
-  text-decoration: none;
-  box-shadow: 0 8px 18px rgba(183,28,28,0.45);
-  transition: var(--transition);
-}
-
-.pics-access:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.05);
 }
 
 /* ================= FOOTER ================= */
@@ -305,40 +304,33 @@ body {
 /* ================= MOBILE ================= */
 @media (max-width: 768px) {
 
-  /* ===== LAYOUT: PRIMERO PRÓXIMOS EVENTOS ===== */
   .layout {
     grid-template-columns: 1fr;
   }
 
-  .sidebar {
-    order: 1; /* 🔥 PRIMERO */
-  }
+  .sidebar { order: 1; }
+  #calendarArea { order: 2; }
 
-  #calendarArea {
-    order: 2; /* 🔥 DESPUÉS */
-  }
-
-  /* ===== HEADER ===== */
   .logo-header {
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    text-align: center;
   }
 
   .logo-title {
     flex-direction: column;
-    text-align: center;
+    gap: 8px;
   }
 
   .logo {
-    height: 70px;
+    height: 80px;
   }
 
   .logo-title h1 {
     font-size: 1.4rem;
   }
 
-  /* ===== HAMBURGER ===== */
   .hamburger {
     display: flex;
     position: absolute;
@@ -348,13 +340,12 @@ body {
 
   .controls {
     position: absolute;
-    top: 72px;
+    top: 90px;
     right: 18px;
     background: var(--glass-bg-strong);
-    backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
     padding: 18px;
-    border-radius: 16px;
+    border-radius: 18px;
     flex-direction: column;
     gap: 14px;
     box-shadow: var(--shadow);
