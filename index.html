@@ -91,7 +91,8 @@
       <p id="modalDate" class="muted"></p>
       <p id="modalDesc"></p>
       <img id="modalImg" class="modal-img" alt="">
-      <a id="modalPicsBtn" class="pics-access" target="_blank" rel="noopener">
+      <!-- El onclick fuerza abrir la URL en nueva pestaña -->
+      <a id="modalPicsBtn" class="pics-access" target="_blank" rel="noopener" onclick="window.open(this.href,'_blank'); return false;">
         Acceder a fotos
       </a>
     </div>
@@ -130,8 +131,8 @@
     const modalPicsBtn = qs("#modalPicsBtn");
     const modalClose = qs("#modalClose");
 
-    openSheetLink.href =
-      `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit#gid=0`;
+    // Link para abrir Google Sheets
+    openSheetLink.href = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit#gid=0`;
 
     function parseSafeDate(str) {
       const [y,m,d] = str.split("-").map(Number);
@@ -220,9 +221,10 @@
       modalImg.style.display = ev.image ? "block" : "none";
       modalImg.src = ev.image || "";
 
+      // ✅ Para cualquier enlace de fotos (Drive, galerías, etc.)
       if (ev.pictures) {
         modalPicsBtn.href = ev.pictures;
-        modalPicsBtn.style.display = "block";
+        modalPicsBtn.style.display = "inline-block";
       } else {
         modalPicsBtn.style.display = "none";
       }
