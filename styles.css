@@ -305,10 +305,20 @@ body {
 /* ================= MOBILE ================= */
 @media (max-width: 768px) {
 
+  /* ===== LAYOUT: PRIMERO PRÓXIMOS EVENTOS ===== */
   .layout {
     grid-template-columns: 1fr;
   }
 
+  .sidebar {
+    order: 1; /* 🔥 PRIMERO */
+  }
+
+  #calendarArea {
+    order: 2; /* 🔥 DESPUÉS */
+  }
+
+  /* ===== HEADER ===== */
   .logo-header {
     flex-direction: column;
     align-items: center;
@@ -328,6 +338,7 @@ body {
     font-size: 1.4rem;
   }
 
+  /* ===== HAMBURGER ===== */
   .hamburger {
     display: flex;
     position: absolute;
@@ -352,23 +363,5 @@ body {
 
   .menu-toggle:checked ~ .controls {
     display: flex;
-  }
-}
-
-/* ================= MODAL SOLO PC ================= */
-@media (min-width: 981px) {
-
-  .modal-card {
-    max-height: calc(100vh - 60px);
-    overflow-y: auto;
-  }
-
-  .modal-card::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .modal-card::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.35);
-    border-radius: 6px;
   }
 }
