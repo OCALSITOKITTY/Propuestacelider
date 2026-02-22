@@ -19,6 +19,7 @@
         <h1>Calendario 2026-2027 CELIDER-08</h1>
       </div>
 
+      <!-- El ID coincide con el 'for' del label de abajo -->
       <input type="checkbox" id="menuToggle" class="menu-toggle">
 
       <label for="menuToggle" class="hamburger">
@@ -29,9 +30,7 @@
 
       <div class="controls">
         <button id="refreshBtn" class="btn">Actualizar</button>
-        <a id="openSheet" class="link" target="_blank" rel="noopener">
-          Editar en Google Sheets
-        </a>
+        <!-- Aquí puedes añadir más enlaces o botones si los necesitas en el menú móvil -->
       </div>
 
     </div>
@@ -91,7 +90,6 @@
       <p id="modalDate" class="muted"></p>
       <p id="modalDesc"></p>
       <img id="modalImg" class="modal-img" alt="">
-      <!-- El onclick fuerza abrir la URL en nueva pestaña -->
       <a id="modalPicsBtn" class="pics-access" target="_blank" rel="noopener" onclick="window.open(this.href,'_blank'); return false;">
         Acceder a fotos
       </a>
@@ -121,7 +119,6 @@
     const calendarArea = qs("#calendarArea");
     const upcomingEl = qs("#upcoming");
     const refreshBtn = qs("#refreshBtn");
-    const openSheetLink = qs("#openSheet");
 
     const modal = qs("#modal");
     const modalTitle = qs("#modalTitle");
@@ -130,14 +127,6 @@
     const modalImg = qs("#modalImg");
     const modalPicsBtn = qs("#modalPicsBtn");
     const modalClose = qs("#modalClose");
-
-    // Link para abrir Google Sheets
-    openSheetLink.href = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit#gid=0`;
-
-    function parseSafeDate(str) {
-      const [y,m,d] = str.split("-").map(Number);
-      return new Date(y, m-1, d, 12);
-    }
 
     async function loadEvents() {
       const res = await fetch(SHEET_URL);
@@ -221,7 +210,6 @@
       modalImg.style.display = ev.image ? "block" : "none";
       modalImg.src = ev.image || "";
 
-      // ✅ Para cualquier enlace de fotos (Drive, galerías, etc.)
       if (ev.pictures) {
         modalPicsBtn.href = ev.pictures;
         modalPicsBtn.style.display = "inline-block";
@@ -234,6 +222,8 @@
 
     modalClose.onclick = () => modal.classList.remove("open");
     modal.onclick = e => e.target === modal && modal.classList.remove("open");
+
+ refreshBtn.onclick = () => location.reload();
 
     loadEvents();
   </script>
