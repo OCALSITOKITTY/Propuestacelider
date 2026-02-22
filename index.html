@@ -90,7 +90,8 @@
       <p id="modalDate" class="muted"></p>
       <p id="modalDesc"></p>
       <img id="modalImg" class="modal-img" alt="">
-      <a id="modalPicsBtn" class="pics-access" target="_blank" rel="noopener" onclick="window.open(this.href,'_blank'); return false;">
+      <a id="modalPicsBtn" class="pics-access" target="_blank" rel="noopener"
+        onclick="window.open(this.href,'_blank'); return false;">
         Acceder a fotos
       </a>
     </div>
@@ -103,6 +104,9 @@
     </div>
   </footer>
 
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Volver arriba">
+  </button>
+
   <!-- ================= SCRIPT ================= -->
   <script>
     const SHEET_ID = "1M6KmCyI9nW21cD2cLER0POZceWOwQTA25n5sRXzjdYg";
@@ -110,8 +114,8 @@
     const SHEET_URL = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
     const YEAR = 2026;
 
-    const months = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
-    const daysShort = ["D","L","M","M","J","V","S"];
+    const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    const daysShort = ["D", "L", "M", "M", "J", "V", "S"];
     const qs = s => document.querySelector(s);
 
     let EVENTS = [];
@@ -127,6 +131,7 @@
     const modalImg = qs("#modalImg");
     const modalPicsBtn = qs("#modalPicsBtn");
     const modalClose = qs("#modalClose");
+    const scrollTopBtn = document.getElementById("scrollTopBtn");
 
     async function loadEvents() {
       const res = await fetch(SHEET_URL);
@@ -151,7 +156,7 @@
       for (let m = 0; m < 12; m++) {
         const month = document.createElement("section");
         month.className = "month-card";
-        month.id = `month-${m+1}`;
+        month.id = `month-${m + 1}`;
         month.innerHTML = `<h2 class="month-title">${months[m]}</h2>`;
 
         const grid = document.createElement("div");
@@ -165,12 +170,12 @@
         });
 
         const firstDay = new Date(YEAR, m, 1).getDay();
-        const daysInMonth = new Date(YEAR, m+1, 0).getDate();
+        const daysInMonth = new Date(YEAR, m + 1, 0).getDate();
 
-        for (let i=0;i<firstDay;i++) grid.appendChild(document.createElement("div"));
+        for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement("div"));
 
-        for (let d=1; d<=daysInMonth; d++) {
-          const key = `${YEAR}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+        for (let d = 1; d <= daysInMonth; d++) {
+          const key = `${YEAR}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
           const ev = EVENTS.find(e => e.date === key);
 
           const cell = document.createElement("button");
@@ -193,7 +198,7 @@
     function renderUpcoming() {
       upcomingEl.innerHTML = "";
 
-      EVENTS.slice(0,6).forEach(ev => {
+      EVENTS.slice(0, 6).forEach(ev => {
         const card = document.createElement("div");
         card.className = `upcoming-card tag-${ev.type}`;
         card.innerHTML = `<strong>${ev.title}</strong><span>${ev.date}</span>`;
@@ -223,10 +228,30 @@
     modalClose.onclick = () => modal.classList.remove("open");
     modal.onclick = e => e.target === modal && modal.classList.remove("open");
 
- refreshBtn.onclick = () => location.reload();
+    refreshBtn.onclick = () => location.reload();
 
     loadEvents();
+
+    // Mostrar botón al hacer scroll
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 300) {
+    scrollTopBtn.classList.add("show");
+  } else {
+    scrollTopBtn.classList.remove("show");
+  }
+});
+
+// Scroll suave hacia arriba
+scrollTopBtn.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+});
   </script>
 
+  
+
 </body>
+
 </html>
