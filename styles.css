@@ -392,3 +392,81 @@ body {
     display: flex;
   }
 }
+
+/* ================= ESTILOS MENÚ HAMBURGUESA (MÓVIL) ================= */
+
+/* Ocultar checkbox por defecto */
+.menu-toggle {
+  display: none;
+}
+
+/* Botón hamburguesa */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 21px;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+/* 🔹 Líneas ahora blancas */
+.hamburger span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background-color: #ffffff; /* Cambiado a blanco */
+  border-radius: 3px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Media Query móvil */
+@media (max-width: 768px) {
+
+  .hamburger {
+    display: flex;
+  }
+
+  /* 🔹 Panel ahora con colores adaptados (igual al header/footer) */
+  .controls {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 250px;
+    height: 100vh;
+
+    /* Usa el mismo color que tu topbar/footer */
+    background: linear-gradient(135deg, #0f172a, #1e293b); 
+    /* Si tu página usa otro color base, cámbialo aquí */
+
+    box-shadow: -2px 0 15px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    padding: 80px 20px 20px 20px;
+    transition: right 0.3s ease-in-out;
+    z-index: 1050;
+  }
+
+  /* Mostrar menú */
+  .menu-toggle:checked ~ .controls {
+    right: 0;
+  }
+
+  /* Animación a X */
+  .menu-toggle:checked + .hamburger span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+  }
+
+  .menu-toggle:checked + .hamburger span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-toggle:checked + .hamburger span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+  }
+
+  .logo-title h1 {
+    font-size: 1.2rem;
+  }
+}
